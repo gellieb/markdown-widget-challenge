@@ -87,7 +87,7 @@ Question: to which element should you attach your event listener? What if the so
 
 It's good practice to [remove](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener)
 (or switch [off](https://api.jquery.com/off/)) any event listeners you attach to individual
-elements. Not doing can create [memory leaks][].
+elements. Not doing so can create [memory leaks][].
 
 ### Release 3 — Stretch: Preview a file
 
