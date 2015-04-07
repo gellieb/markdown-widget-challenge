@@ -28,10 +28,10 @@ Custom elements are still a bit new, so there isn't a great
 deal of documentation. Fortunately, the API is relatively
 straightforward.
 
-Here is a thorough, if rather breathless description of
+[Here][custom elements] is a thorough, if rather breathless, description of
 [custom elements][].
 
-A quick review:
+A brief overview:
 
     // Your prototype's prototype will be the element you
     // want to extend. Typically HTMLElement, though maybe
@@ -83,6 +83,8 @@ Have your widget set up the
 [appropriate event listeners](https://developer.mozilla.org/en-US/docs/Web/Events/input)
 to update itself when the contents of its source element change.
 
+Question: to which element should you attach your event listener? What if the source element is attached to the page after your preview widget?
+
 It's good practice to [remove](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener)
 (or switch [off](https://api.jquery.com/off/)) any event listeners you attach to individual
 elements. Not doing can create [memory leaks][].
@@ -94,10 +96,11 @@ take a URL with markdown content and display it. Your Javascript code will need 
 
 ## Optimize your learning
 
-Notice that sometimes it's helpful to delay the building of the algorithm until
-later. It can be helpful to focus on data flow first, by simply copying data
-through your pipeline (that is, appling the [identity transform][identity]) and confirming
-that it arrives where you hope it will.
+It's often helpful to focus on the flow of data through your program before
+you work out precisely how you want to transform it. In this case, we
+first set up a widget that used [identity transform][identity] to confirm that
+we could read something—*anything*—from one part of the page and insert it
+into another.
 
 ## Resources
 
