@@ -6,57 +6,109 @@
 * Build a pure JavaScript application
 * Build a pure JavaScript class
 * Write OO JavaScript
+* Write modular views in JS
 
 ## Summary
 
-The goal will be to create a "live" markdown preview widget in JavaScript.
-When a user enters Markdown *text* inside a text area, the _rendered_ version
-is displayed elsewhere on the page.
+Let's create a markdown preview widget. The goal is to define an element
+which I can use in my pages to preview some Markdown source. It should
+work like this:
 
-The goal is to use object-oriented JavaScript to construct a widget.  Ideally
-you should be able to issue the command:
+    <markdown-preview for="#src"></markdown-preview>
+    <textarea id="src"></textarea>    
 
-    MarkdownWidget("#source-id", "#preview-div")
-    
-Your goal in this challenge **is not** to write a Markdown parser (although that is certainly worth a stretch!) the goal is to produce an MVC architecture in a language _that has no inherent patterns on how to build one_!
+When we're done, the `<markdown-preview>` element will show a live preview
+of the markdown source selected by its `for` attribute (`#src`, in this case).
+
+When we change the content of the text area, the preview element should update.
+
+## Review — Defining a tag
+
+Custom elements are still a bit new, so there isn't a great
+deal of documentation. Fortunately, the API is relatively
+straightforward.
+
+Here is a thorough, if rather breathless description of
+[custom elements][].
+
+A quick review:
+
+    // Your prototype's prototype will be the element you
+    // want to extend. Typically HTMLElement, though maybe
+    // you'll find a moment where you want to extend
+    // HTMLSelectElement or something.
+    var myElementProto = Object.create(HTMLElement.prototype);
+
+    // You get lifecycle callbacks: createdCallback, attachedCallback,
+    // detachedCallback, and attributeChangedCallback(attrName, oldVal, newVal).
+    //
+    // The browser calls these functions when these things happen to your
+    // element, so you can respond. They are all optional, and go on
+    // the prototype:
+    myElementProto.createdCallback = function() { }
+
+    // You can define whatever other functions you want on the prototype.
+    myElementProto.fuchsiafy = function() {
+      this.style.backgroundColor = 'fuchsia';
+    };
+
+    // document.registerElement returns a constructor, though
+    // you probably won't need it for this challenge.
+    var MyElement = document.registerElement('my-element', {prototype: myElementProto});
+
 
 ## Releases
 
-### Release -1
+### Release 0 — Dead Preview
 
-Your instructor may want you to try a simple implementation that _does not_ adhere to MVC principles.  It may be the instructors design built on the techniques you already know.  See if you should follow this path or if you should move directly to the MVC-based implementation.
+Define a `<markdown-preview>` element with
+[`document.registerElement`](http://www.html5rocks.com/en/tutorials/webcomponents/customelements/).
 
-### Release 0
+[When your element is attached to the page][lifecycle callbacks], have it find the element selected by
+its `for` attribute and copy that element's content into itself. Don't worry about
+parsing the markdown just yet.
 
-Set up an object-oriented architecture (possibly [Model View Controller][MVC]
-or [Model View Presenter][MVP]) that performs a "[identity transformation][identity]" based on the "keyup" event.  That is, return the
-markdown text as the preview text.
+### Release 1 — Pining for the Fjords Preview
 
-### Release 1
+Parsing Markdown is a fairly substantial task on its own. Grab a
+[markdown library][marked]. (I don't know if that's the best one, but it looks
+like it has a nice interface and supports GitHub flavored markdown).
 
-Introduce the Markdown converter.  You need not implement the _full_
-specification, but you should support `*`, `_`, and `**` for italics, italics,
-and bold, respectively.
+Using the markdown library, convert the content of the markdown element to
+HTML before previewing it.
 
-### Release 2
+### Release 2 — Live Preview
 
-Swap out the transformation logic from *your* implementation to one provided by
-a third party e.g. [markdown-js]
+Have your widget set up the
+[appropriate event listeners](https://developer.mozilla.org/en-US/docs/Web/Events/input)
+to update itself when the contents of its source element change.
+
+It's good practice to [remove](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener)
+(or switch [off](https://api.jquery.com/off/)) any event listeners you attach to individual
+elements. Not doing can create [memory leaks][].
+
+### Release 3 — Stretch: Preview a file
+
+Add support for an `src` attribute on your custom element. This attribute should
+take a URL with markdown content and display it. Your Javascript code will need to issue an HTTP request for the `src` URL.
 
 ## Optimize your learning
 
 Notice that sometimes it's helpful to delay the building of the algorithm until
-later.  An identity transformation confirms that the flow works, but doesn't
-hang your development process in the research of specifics.
+later. It can be helpful to focus on data flow first, by simply copying data
+through your pipeline (that is, appling the [identity transform][identity]) and confirming
+that it arrives where you hope it will.
 
 ## Resources
 
-* [MVC][]
-* [MVP][]
+* [custom elements][]
+* [lifecycle callbacks][]
+* [marked][]
 * [Identity transformation][identity]
-* [markdown-js][]
+* [optimizing Javascript][memory leaks]
 
-[MVC]: http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
-[MVP]: http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter
+[custom elements]: http://www.html5rocks.com/en/tutorials/webcomponents/customelements/
+[lifecycle callbacks]: http://www.html5rocks.com/en/tutorials/webcomponents/customelements/#lifecycle
+[marked]: https://github.com/chjj/marked
 [identity]: http://en.wikipedia.org/wiki/Identity_transform
-[markdown-js]: https://github.com/evilstreak/markdown-js
+[memory leaks]: https://developers.google.com/speed/articles/optimizing-javascript
