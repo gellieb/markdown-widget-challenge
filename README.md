@@ -14,13 +14,14 @@ Let's create a markdown preview widget. The goal is to define an element
 which I can use in my pages to preview some Markdown source. It should
 work like this:
 
-    <markdown-preview for="#src"></markdown-preview>
-    <textarea id="src"></textarea>    
+    <markdown-preview for="src"></markdown-preview>
+    <textarea id="src"></textarea>  
 
 When we're done, the `<markdown-preview>` element will show a live preview
-of the markdown source selected by its `for` attribute (`#src`, in this case).
+of the markdown source in the element identifed by its `for` attribute (the
+`textarea`, in this case).
 
-When we change the content of the text area, the preview element should update.
+When we change the content of the text area, the preview element will update.
 
 ## Review — Defining a tag
 
@@ -34,26 +35,32 @@ straightforward.
 A brief overview:
 
     // Your prototype's prototype will be the element you
-    // want to extend. Typically HTMLElement, though maybe
-    // you'll find a moment where you want to extend
-    // HTMLSelectElement or something.
+    // want to extend. The simplest case is to extend HTMLElement.
     var myElementProto = Object.create(HTMLElement.prototype);
 
-    // You get lifecycle callbacks: createdCallback, attachedCallback,
-    // detachedCallback, and attributeChangedCallback(attrName, oldVal, newVal).
+    // You get these lifecycle callbacks:
+    //   createdCallback()
+    //   attachedCallback()
+    //   attributeChangedCallback(attrName, oldVal, newVal)
+    //   detachedCallback()
     //
-    // The browser calls these functions when these things happen to your
-    // element, so you can respond. They are all optional, and go on
-    // the prototype:
-    myElementProto.createdCallback = function() { }
+    // If they are defined, the browser will call these functions
+    // when your element is created, attached to the page, detached
+    // from the page, or has an attribute modified.
+    //
+    // You define them on the prototype like so:
+    myElementProto.attachedCallback = function() {
+      this.textContent = "I'm on the page! Wheeee!";
+    };
 
-    // You can define whatever other functions you want on the prototype.
+    // You can define whatever other functions you want on your
+    // element's prototype.
     myElementProto.fuchsiafy = function() {
       this.style.backgroundColor = 'fuchsia';
     };
 
     // document.registerElement returns a constructor, though
-    // you probably won't need it for this challenge.
+    // you probably won't need to call it directly in this challenge.
     var MyElement = document.registerElement('my-element', {prototype: myElementProto});
 
 
@@ -75,7 +82,7 @@ Parsing Markdown is a fairly substantial task on its own. Grab a
 like it has a nice interface and supports GitHub flavored markdown).
 
 Using the markdown library, convert the content of the markdown element to
-HTML before previewing it.
+HTML before displaying it.
 
 ### Release 2 — Live Preview
 
@@ -83,11 +90,15 @@ Have your widget set up the
 [appropriate event listeners](https://developer.mozilla.org/en-US/docs/Web/Events/input)
 to update itself when the contents of its source element change.
 
-Question: to which element should you attach your event listener? What if the source element is attached to the page after your preview widget?
+Question: which element should you attach your event listener to? What if the source element is attached to the page after your preview widget gets attached?
 
-It's good practice to [remove](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener)
-(or switch [off](https://api.jquery.com/off/)) any event listeners you attach to individual
-elements. Not doing so can create [memory leaks][].
+It's good practice to
+[remove](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener)
+(or switch [off](https://api.jquery.com/off/)) any event listeners you attach once you no
+longer need them. The element's lifecycle callbacks provide a convenient place to do
+this.
+
+Not doing so can create [memory leaks][].
 
 ### Release 3 — Stretch: Preview a file
 
