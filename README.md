@@ -10,15 +10,13 @@
 
 ## Summary
 
-Let's create a markdown preview widget. The goal is to define an element
-which I can use in my pages to preview some Markdown source. It should
-work like this:
+Let's create a markdown preview widget. It should work like this:
 
     <markdown-preview for="src"></markdown-preview>
     <textarea id="src"></textarea>  
 
 When we're done, the `<markdown-preview>` element will show a live preview
-of the markdown source in the element identifed by its `for` attribute (the
+of the source in the element identifed by its `for` attribute (the
 `textarea`, in this case).
 
 When we change the content of the text area, the preview element will update.
@@ -89,8 +87,6 @@ HTML before displaying it.
 Have your widget set up the
 [appropriate event listeners](https://developer.mozilla.org/en-US/docs/Web/Events/input)
 to update itself when the contents of its source element change.
-
-Question: which element should you attach your event listener to? What if the source element is attached to the page after your preview widget gets attached?
 
 It's good practice to
 [remove](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener)
