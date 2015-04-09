@@ -1,0 +1,18 @@
+markdown-preview {
+  display: block;
+  width: 50%;
+  height: 100%;
+  float: left;
+  background: #eeeeee;
+}
+
+#final {
+  width: 50%;
+  float: right;
+  background: #cccccc;
+}
+
+textarea {
+  width: 90%;
+  height: 100%;
+}
