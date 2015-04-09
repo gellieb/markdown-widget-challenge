@@ -4,7 +4,7 @@
 var markdownPreviewProto = Object.create(HTMLElement.prototype);
 
 markdownPreviewProto.attachedCallback = function(){
-  this.h1 = document.getElementById('h1');
+  this.marked = document.getElementById('marked-textarea');
   this.convert = this.convert.bind(this);
   this.result = document.getElementById('result');
   var convertedText = this;
@@ -15,7 +15,7 @@ markdownPreviewProto.attachedCallback = function(){
 }
 
 markdownPreviewProto.convert = function(){
-  this.result.innerHTML = marked(this.h1.value);
+  this.result.innerHTML = marked(this.marked.value);
 };
 
 document.registerElement('markdown-preview', {
