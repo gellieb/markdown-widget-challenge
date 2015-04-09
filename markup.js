@@ -30,7 +30,7 @@ newHTMLTag.createdCallback = function() {
 newHTMLTag.changeText = function() {
 
   $('#converted-text').html(marked($('#text-to-convert').val()));
-  setTimeout(this.changeText, this.delay * 1 || 100);
+  setTimeout(this.changeText, this.delay * 1 || 50);
 };
 
 var MyElement = document.registerElement('ryan-sam-tag', {prototype: newHTMLTag});
